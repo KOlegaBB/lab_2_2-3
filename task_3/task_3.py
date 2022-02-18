@@ -7,8 +7,9 @@ import json
 import requests
 from flask import Flask, render_template, request
 from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderUnavailable
 
-app = Flask('Friends_map')
+app = Flask('Friends_map', template_folder='mysite/templates')
 
 
 @app.route('/')
@@ -36,7 +37,7 @@ def get_friends_inform(user_name):
     """
     url = 'https://api.twitter.com/2/users/by/username/' + user_name
     headers = {
-        'authorization': '<Twitter API token>'}
+        'authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAAELuZAEAAAAAFR9Mvn9%2BRHUC7VFtGVLN8%2F%2FG5M8%3DzMxk03Af4CQhhS4xTBOihDewqGCMdi9pbCotwSQKAI0UEZxf7C'}
     user_inform = json.loads(requests.get(url, headers=headers).text)
     user_id = user_inform["data"]["id"]
     friends_url = "https://api.twitter.com/2/users/" + user_id + "/following"
@@ -69,6 +70,8 @@ def get_coordinates(friend_location):
             coordinates = (location.latitude, location.longitude)
             return coordinates
     except TimeoutError:
+        return None
+    except GeocoderUnavailable:
         return None
 
 
