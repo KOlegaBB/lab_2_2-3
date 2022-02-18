@@ -9,7 +9,7 @@ from flask import Flask, render_template, request
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderUnavailable
 
-app = Flask('Friends_map', template_folder='mysite/templates')
+app = Flask('Friends_map')
 
 
 @app.route('/')
@@ -36,8 +36,11 @@ def get_friends_inform(user_name):
     :return: information about friends of this account
     """
     url = 'https://api.twitter.com/2/users/by/username/' + user_name
-    headers = {'authorization': '<API token>'}
+    headers = {
+        'authorization': '<Twitter API>'}
     user_inform = json.loads(requests.get(url, headers=headers).text)
+    if "errors" in user_inform:
+        return None
     user_id = user_inform["data"]["id"]
     friends_url = "https://api.twitter.com/2/users/" + user_id + "/following"
     friends_inform = json.loads(requests.get(friends_url,
@@ -80,6 +83,8 @@ def get_friends_locations(friends_json):
     :param friends_json: information about friends
     :return: list of tuple with coordinates of friends location and it's name
     """
+    if friends_json is None:
+        return []
     name_and_location = []
     for friend in friends_json['data']:
         if "location" in friend:
