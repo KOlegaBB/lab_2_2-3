@@ -36,8 +36,7 @@ def get_friends_inform(user_name):
     :return: information about friends of this account
     """
     url = 'https://api.twitter.com/2/users/by/username/' + user_name
-    headers = {
-        'authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAAELuZAEAAAAAFR9Mvn9%2BRHUC7VFtGVLN8%2F%2FG5M8%3DzMxk03Af4CQhhS4xTBOihDewqGCMdi9pbCotwSQKAI0UEZxf7C'}
+    headers = {'authorization': '<API token>'}
     user_inform = json.loads(requests.get(url, headers=headers).text)
     user_id = user_inform["data"]["id"]
     friends_url = "https://api.twitter.com/2/users/" + user_id + "/following"
